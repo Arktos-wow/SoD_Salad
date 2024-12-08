@@ -1,8 +1,8 @@
 # Salad_Cthun
 
-https://www.curseforge.com/wow/addons/salad_cthun
+https://www.curseforge.com/wow/addons/SoD_Salad
 
-World of Warcraft Classic 1.13.05 addon to predict/show positioning on C'thun(AQ40).
+World of Warcraft Classic SoD addon to predict/show positioning on C'thun(AQ40).
 
 Open frame with /salad.
 
