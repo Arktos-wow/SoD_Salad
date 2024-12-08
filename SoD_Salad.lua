@@ -177,6 +177,6 @@ SlashCmdList.SALAD = function(msg)
     elseif msg == "hide" then
         frame:Hide()
     else
-        print("|cffffff00Commands: /sdc show, /sdc hide")
+        print("|cffffff00Commands: /salad show, /salad hide")
     end
 end
