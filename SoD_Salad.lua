@@ -169,7 +169,7 @@ function wipeReserves()
 end
 
 -- Slash commands
-SLASH_SALAD1 = "/sdc"
+SLASH_SALAD1 = "/salad"
 SlashCmdList.SALAD = function(msg)
     if msg == "show" then
         frame:Show()
