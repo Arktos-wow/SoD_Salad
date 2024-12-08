@@ -75,30 +75,9 @@ frame:SetBackdrop(backdrop)
 frame:SetAlpha(1.0)
 frame:SetUserPlaced(true)
 frame:SetFrameStrata("HIGH")
-
--- Fill grid logic (Updated to handle SoD changes dynamically)
-function fillGrid()
-    wipeReserves()
-    getRaidInfo()
-    for i = 1, 8 do
-        for j = 1, 5 do
-            local index = (i - 1) * 5 + j
-            local dot = _G["Dot_" .. index]
-            local texture = _G["Texture_" .. index]
-            local name, class = dotRes[i][j][1], dotRes[i][j][2]
-            if name and class then
-                newDot(dot, texture, name, strlower(class))
-            end
-        end
-    end
-end
-
--- Register events
 frame:RegisterEvent("GROUP_ROSTER_UPDATE")
 frame:SetScript("OnEvent", function()
-    fillGrid()
-end)
-frame:Hide()
+	fillGrid()
 
 -- Slider for opacity
 local Salad_Slider = CreateFrame("Slider", "MySlider1", frame, "OptionsSliderTemplate")
@@ -149,14 +128,124 @@ button:SetScript("OnClick", function()
     frame:Hide()
 end)
 
--- Tooltip creation
-for i = 1, 40 do
-    local dot = CreateFrame("Button", "Dot_" .. i, frame)
-    dot:SetPoint("CENTER", frame, "CENTER", dotPos[i][1], dotPos[i][2])
-    dot:SetSize(20, 20)
-    local texdot = dot:CreateTexture("Texture_" .. i, "OVERLAY")
-    texdot:SetAllPoints(dot)
-    texdot:SetTexture("Interface\\AddOns\\SoD_Salad\\Images\\playerdot.tga")
+--Create dot frames
+for i=1,40 do
+	dot = CreateFrame("Button", "Dot_"..i, frame)
+	dot:SetPoint("CENTER", frame, "CENTER", dotPos[i][1], dotPos[i][2])
+	dot:EnableMouse(true)
+	dot:SetFrameLevel(dot:GetFrameLevel()+3)
+	tooltip = CreateFrame("GameTooltip", "Tooltip_"..i, nil, "GameTooltipTemplate")
+	local texdot = dot:CreateTexture("Texture_"..i, "OVERLAY")
+	dot.texture = texdot
+	texdot:SetAllPoints(dot)
+	texdot:SetTexture("Interface\\AddOns\\Salad_Cthun\\Images\\playerdot.tga")
+	texdot:Hide()
+	dot:SetScript("OnEnter", function()
+		tooltip:SetOwner(dot, "ANCHOR_RIGHT")
+		tooltip:SetText("Empty")
+		tooltip:Show()
+	end)
+	dot:SetScript("OnLeave", function()
+		tooltip:Hide()
+	end)
+end
+
+function newDot(dot, tooltip, texture, name, class)
+	if (Salad_PlayerName == name) then
+		dot:SetWidth(36)
+		dot:SetHeight(36)
+	else
+		dot:SetWidth(20)
+		dot:SetHeight(20)
+	end
+	
+	if name ~= "Empty" then
+		texture:SetVertexColor(classColors[class][1], classColors[class][2], classColors[class][3], 1.0)
+		texture:Show()
+	else
+		texture:Hide()
+	end
+
+	dot:SetScript("OnEnter", function()
+		tooltip:SetOwner(dot, "ANCHOR_RIGHT")
+		tooltip:SetText(name)
+		tooltip:Show()
+	end)
+
+	dot:SetScript("OnLeave", function()
+		tooltip:Hide()
+	end)
+end
+
+local dotRes = {{{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"}}, -- group 1
+		  		{{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"}}, -- group 2
+		  		{{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"}}, --    |
+	  	  		{{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"}}, --    |
+	  	  		{{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"}}, --    |
+		  		{{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"}}, --    |
+		  		{{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"}}, --    |
+		  		{{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"},{"Empty","Empty"}}} -- group 8
+
+function getRaidInfo()
+	for i=1,40 do
+		local name,_,subgroup,_,class = GetRaidRosterInfo(i);
+
+		if (class == "Rogue" or class == "Warrior") then
+			if dotRes[subgroup][1][1] == "Empty" or dotRes[subgroup][1][1] == name then
+				dotRes[subgroup][1] = {name, class}
+			elseif dotRes[subgroup][5][1] == "Empty" or dotRes[subgroup][5][1] == name then
+				dotRes[subgroup][5] = {name, class}
+			elseif dotRes[subgroup][2][1] == "Empty" or dotRes[subgroup][2][1] == name then
+				dotRes[subgroup][2] = {name, class}
+			elseif dotRes[subgroup][3][1] == "Empty" or dotRes[subgroup][3][1] == name then
+				dotRes[subgroup][3] = {name, class}
+			else
+				dotRes[subgroup][4] = {name, class}
+			end
+		elseif (class == "Mage" or class == "Warlock" or class == "Hunter") then
+			if dotRes[subgroup][3][1] == "Empty" or dotRes[subgroup][3][1] == name then
+				dotRes[subgroup][3] = {name, class}
+			elseif dotRes[subgroup][4][1] == "Empty" or dotRes[subgroup][4][1] == name then
+				dotRes[subgroup][4] = {name, class}
+			elseif dotRes[subgroup][5][1] == "Empty" or dotRes[subgroup][5][1] == name then
+				dotRes[subgroup][5] = {name, class}
+			elseif dotRes[subgroup][2][1] == "Empty" or dotRes[subgroup][2][1] == name then
+				dotRes[subgroup][2] = {name, class}
+			else 
+				dotRes[subgroup][1] = {name, class}
+			end
+		elseif (class == "Priest" or class == "Paladin" or class == "Druid" or class == "Shaman") then
+			if dotRes[subgroup][2][1] == "Empty" or dotRes[subgroup][2][1] == name then
+				dotRes[subgroup][2] = {name, class}
+			elseif dotRes[subgroup][5][1] == "Empty" or dotRes[subgroup][5][1] == name then
+				dotRes[subgroup][5] = {name, class}
+			elseif dotRes[subgroup][3][1] == "Empty" or dotRes[subgroup][3][1] == name then
+				dotRes[subgroup][3] = {name, class}
+			elseif dotRes[subgroup][4][1] == "Empty" or dotRes[subgroup][4][1] == name then
+				dotRes[subgroup][4] = {name, class}
+			else
+				dotRes[subgroup][1] = {name, class}
+			end
+		end
+	end
+end
+
+
+-- Fill grid logic (Updated to handle SoD changes dynamically)
+function fillGrid()
+    wipeReserves()
+    getRaidInfo()
+    for i = 1, 8 do
+        for j = 1, 5 do
+            local index = (i - 1) * 5 + j
+            local dot = _G["Dot_" .. index]
+            local texture = _G["Texture_" .. index]
+            local name, class = dotRes[i][j][1], dotRes[i][j][2]
+            if name and class then
+                newDot(dot, texture, name, strlower(class))
+            end
+        end
+    end
 end
 
 -- Wipe reserve table
