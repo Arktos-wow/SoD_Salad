@@ -58,7 +58,7 @@ local Salad_PlayerName, _ = UnitName("player")
 
 -- Backdrop configuration for frame
 local backdrop = {
-    bgFile = "Interface\\AddOns\\SoDCthun\\Images\\CThun_Positioning.tga", -- Updated for SoD
+    bgFile = "Interface\\AddOns\\SoD_Salad\\Images\\CThun_Positioning.tga", -- Updated for SoD
     edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
     tile = false,
     edgeSize = 32,
@@ -124,7 +124,7 @@ Salad_Header:SetBackdrop({
 
 local Salad_Fontstring = Salad_Header:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 Salad_Fontstring:SetPoint("CENTER", Salad_Header, "CENTER", 0, 12)
-Salad_Fontstring:SetText("SoDCthun")
+Salad_Fontstring:SetText("SoD Salad")
 
 -- Drag functionality
 local drag = CreateFrame("Frame", nil, frame)
@@ -156,7 +156,7 @@ for i = 1, 40 do
     dot:SetSize(20, 20)
     local texdot = dot:CreateTexture("Texture_" .. i, "OVERLAY")
     texdot:SetAllPoints(dot)
-    texdot:SetTexture("Interface\\AddOns\\SoDCthun\\Images\\playerdot.tga")
+    texdot:SetTexture("Interface\\AddOns\\SoD_Salad\\Images\\playerdot.tga")
 end
 
 -- Wipe reserve table
