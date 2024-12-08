@@ -1,0 +1,8 @@
+## Interface: 100107
+## Title: Sod_Salad
+## Author: Goffauxs - Arktos Update
+## Version: 2.0
+## Notes: Optimized for Season of Discovery, shows optimal positioning based on raid groups on C'thun.
+
+
+SoD_Salad.lua
