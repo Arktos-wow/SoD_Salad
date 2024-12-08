@@ -1,27 +1,56 @@
--- Constants for dot positions
 local dotPos = {
-    -- Grouped and updated for clarity
-    [1] = {1, 98}, -- Melee
-    [2] = {-32, 131}, -- Healer
-    [3] = {-20, 170}, -- Ranged
-    [4] = {22, 171}, -- Ranged
-    [5] = {34, 132}, -- Healer/Ranged
-    -- Additional positions
-    [6] = {67, 71}, -- Melee
-    -- (Continue similar for other groups)
+	[1] = {1, 98}, --melee        		-- 
+	[2] = {-32, 131}, --healer    		-|
+	[3] = {-20, 170}, --ranged    		-|Group 1 
+	[4] = {22, 171}, --ranged     		-|
+	[5] = {34, 132}, --healer/ranged    --
+	[6] = {67, 71}, -- melee      		--
+	[7] = {69, 118}, --healer     		-|
+	[8] = {105, 137}, --ranged    		-|Group 2
+	[9] = {134, 107}, --ranged    		-|
+	[10] = {115, 70}, --healer/ranged   --
+	[11] = {-66, 69}, -- melee    		--
+	[12] = {-113, 69}, --healer   		-|
+	[13] = {-132, 106}, --ranged  		-|Group 3
+	[14] = {-66, 116}, --ranged   		-|
+	[15] = {-103, 135}, --healer/ranged --
+	[16] = {97, 4}, -- melee      		--
+	[17] = {130, 37}, --healer    		-|
+	[18] = {169, 24}, --ranged    		-|Group 4
+	[19] = {170, -17}, --ranged   		-|
+	[20] = {130, -30}, --healer/ranged  --
+	[21] = {-93, 2}, -- melee     		--
+	[22] = {-126, -31}, --healer  		-|
+	[23] = {-166, -19}, --ranged  		-|Group 5
+	[24] = {-166, 22}, --ranged   		-|
+	[25] = {-127, 35}, --healer/ranged  --
+	[26] = {69, -64}, -- melee    		--
+	[27] = {117, -64}, --healer   		-|
+	[28] = {135, -100}, --ranged  		-|Group 6
+	[29] = {107, -129}, --ranged  		-|
+	[30] = {70, -110}, --healer/ranged  --
+	[31] = {-65, -65}, -- melee   		--
+	[32] = {-65, -112}, --healer  		-|
+	[33] = {-101, -131}, --ranged 		-|Group 7
+	[34] = {-130, -102}, --ranged 		-|
+	[35] = {-112, -66}, --healer/ranged --
+	[36] = {3, -92}, -- melee     		--
+	[37] = {36, -126}, --healer   		-|
+	[38] = {24, -165}, --ranged   		-|Group 8
+	[39] = {-18, -165}, --ranged  		-|
+	[40] = {-30, -126} --healer/ranged  --
 }
 
--- Updated class colors for better readability
 local classColors = {
-    warrior = {0.78, 0.61, 0.43},
-    rogue = {1.0, 0.96, 0.41},
-    mage = {0.25, 0.78, 0.92},
-    warlock = {0.58, 0.51, 0.79},
-    hunter = {0.67, 0.83, 0.45},
-    priest = {1.0, 1.0, 1.0},
-    paladin = {0.96, 0.55, 0.73},
-    druid = {1.0, 0.49, 0.04},
-    shaman = {0.0, 0.44, 0.87},
+	["warrior"] = {0.68, 0.51, 0.33},
+	["rogue"] = {1.0, 0.96, 0.31},
+	["mage"] = {0.21, 0.60, 0.74},
+	["warlock"] = {0.48, 0.41, 0.69},
+	["hunter"] = {0.47, 0.73, 0.25},
+	["priest"] = {1.0, 1.00, 1.00},
+	["paladin"] = {0.96, 0.55, 0.73},
+	["druid"] = {1.0, 0.49, 0.04},
+	["shaman"] = {0.0, 0.34, 0.77}
 }
 
 -- Player name
@@ -46,6 +75,23 @@ frame:SetBackdrop(backdrop)
 frame:SetAlpha(1.0)
 frame:SetUserPlaced(true)
 frame:SetFrameStrata("HIGH")
+
+-- Fill grid logic (Updated to handle SoD changes dynamically)
+function fillGrid()
+    wipeReserves()
+    getRaidInfo()
+    for i = 1, 8 do
+        for j = 1, 5 do
+            local index = (i - 1) * 5 + j
+            local dot = _G["Dot_" .. index]
+            local texture = _G["Texture_" .. index]
+            local name, class = dotRes[i][j][1], dotRes[i][j][2]
+            if name and class then
+                newDot(dot, texture, name, strlower(class))
+            end
+        end
+    end
+end
 
 -- Register events
 frame:RegisterEvent("GROUP_ROSTER_UPDATE")
@@ -111,23 +157,6 @@ for i = 1, 40 do
     local texdot = dot:CreateTexture("Texture_" .. i, "OVERLAY")
     texdot:SetAllPoints(dot)
     texdot:SetTexture("Interface\\AddOns\\SoDCthun\\Images\\playerdot.tga")
-end
-
--- Fill grid logic (Updated to handle SoD changes dynamically)
-function fillGrid()
-    wipeReserves()
-    getRaidInfo()
-    for i = 1, 8 do
-        for j = 1, 5 do
-            local index = (i - 1) * 5 + j
-            local dot = _G["Dot_" .. index]
-            local texture = _G["Texture_" .. index]
-            local name, class = dotRes[i][j][1], dotRes[i][j][2]
-            if name and class then
-                newDot(dot, texture, name, strlower(class))
-            end
-        end
-    end
 end
 
 -- Wipe reserve table
