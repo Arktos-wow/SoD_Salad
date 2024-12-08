@@ -169,7 +169,7 @@ function wipeReserves()
 end
 
 -- Slash commands
-SLASH_SALAD1 = "/salad"
+SLASH_SALAD1 = "/sdc"
 SlashCmdList.SALAD = function(msg)
     if msg == "show" then
         frame:Show()
@@ -177,6 +177,6 @@ SlashCmdList.SALAD = function(msg)
     elseif msg == "hide" then
         frame:Hide()
     else
-        print("|cffffff00Commands: /salad show, /salad hide")
+        print("|cffffff00Commands: /sdc show, /sdc hide")
     end
 end
